@@ -57,13 +57,12 @@
       <hr />
 
       <form onsubmit="submitHandle(event)">
-        <h2>Chọn user</h2>
+        <h2>Chọn user để like</h2>
         <div class="form-group">
           <select class="form-control" id="userList"></select>
         </div>
         <h2>Chọn nhà hàng</h2>
-        <select class="form-control" id="resList"></select>
-        <h2>Chọn hành động</h2>
+        <select class="form-control mb-2" id="resList"></select>
         <button class="btn btn-primary" onclick="likeHandle(true)">
           Like nhà hàng
         </button>
@@ -73,12 +72,15 @@
       </form>
       <hr />
       <form onsubmit="likedResHandle(event)">
-        <h2>Chọn user</h2>
+        <h2>Chọn user (Chỉ user chưa có hoạt động nào mới xóa dc)</h2>
         <div class="form-group">
           <select class="form-control" id="userList2"></select>
         </div>
         <button type="submit" class="btn btn-primary">
           Xem danh sách nhà hàng đã like
+        </button>
+        <button type="button" class="btn btn-danger" onclick="deleteUser()">
+          Xóa user
         </button>
         <ul class="list-group mt-2" id="likedResList">
           <li class="list-group-item">Danh sách trống!</li>
@@ -232,6 +234,18 @@
             .catch((error) => {
               likedResList.innerHTML += `<option class="list-group-item">${error.response.data}</option>`;
             });
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      const deleteUser = async () => {
+        try {
+          const user_id = document.getElementById("userList2").value;
+          await axios
+            .delete(domain + `/user/deleteUser/${user_id}`)
+            .then((result) => alert(result.data));
+          window.location.reload();
         } catch (error) {
           console.log(error);
         }
