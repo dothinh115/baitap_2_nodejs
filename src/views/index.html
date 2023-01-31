@@ -122,38 +122,22 @@
         try {
           await axios.get(domain + "/food/getAllFoodType").then((res) => {
             res.data.forEach((element) => {
-              select.innerHTML +=
-                "<option value='" +
-                element.type_id +
-                "'>" +
-                element.type_name +
-                "</option>";
+              select.innerHTML += `<option value="${element.type_id}">${element.type_name}</option>`;
             });
           });
           await axios.get(domain + "/user/getAllUsers").then((res) => {
             res.data.forEach((element) => {
-              userList.innerHTML +=
-                "<option value='" +
-                element.user_id +
-                "'>" +
-                element.full_name +
-                "</option>";
-              userList2.innerHTML +=
-                "<option value='" +
-                element.user_id +
-                "'>" +
-                element.full_name +
-                "</option>";
+              userList.innerHTML += `<option value="
+                ${element.user_id}">${element.full_name}
+                </option>`;
+              userList2.innerHTML += `<option value="
+                ${element.user_id}">${element.full_name}
+                </option>`;
             });
           });
           await axios.get(domain + "/res/getAllRes").then((res) => {
             res.data.forEach((element) => {
-              resList.innerHTML +=
-                "<option value='" +
-                element.res_id +
-                "'>" +
-                element.res_name +
-                "</option>";
+              resList.innerHTML += `<option value="${element.res_id}">${element.res_name}</option>`;
             });
           });
         } catch (error) {
