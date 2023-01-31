@@ -37,12 +37,8 @@ const likeRes = async (req, res) => {
     //   res
     //     .status(400)
     //     .send(
-    //       "LỖI: " +
-    //         user_name.full_name +
-    //         " đã like " +
-    //         res_name.res_name +
-    //         " rồi!"
-    //     );
+    // `LỖI: ${user_name.full_name} đã like ${res_name.res_name} rồi!`
+    // );
     // } else {
     //   const newLike = {
     //     user_id,
@@ -53,8 +49,8 @@ const likeRes = async (req, res) => {
     //   res
     //     .status(200)
     //     .send(
-    //       user_name.full_name + " đã like " + res_name.res_name + " thành công!"
-    //     );
+    // `${user_name.full_name} đã like ${res_name.res_name} thành công!`
+    // );
     // }
 
     const checkIfLikedSql = `SELECT * FROM like_res WHERE user_id = ${user_id} AND res_id = ${res_id} LIMIT 1`;
