@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <style></style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Thêm user</h2>
+      <div class="form-group">
+        <button class="btn btn-primary" onclick="addNewUser()">
+          Thêm User mới từ randomUser
+        </button>
+      </div>
+
+      <h2>Thêm loại thức ăn (food type)</h2>
+      <form onsubmit="addNewFoodType()">
+        Tên loại thức ăn (type):
+        <div class="form-group row">
+          <div class="col">
+            <input class="form-control" type="text" id="newFoodType" />
+          </div>
+          <div class="col">
+            <button class="btn btn-primary" type="submit">Thêm</button>
+          </div>
+        </div>
+      </form>
+      <h2>Thêm món ăn</h2>
+      <form onsubmit="addNewFood(event)">
+        <div class="form-group row">
+          <label class="col-form-label col-sm-2">Tên món ăn</label>
+          <input type="text" id="foodName" class="form-control col-sm-10" />
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-sm-2">Loại món ăn</label>
+          <select id="foodType" class="form-control col-sm-10"></select>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-sm-2" class="form-control col-sm-10"
+            >Giá</label
+          >
+          <input type="number" id="price" class="form-control col-sm-10" />
+        </div>
+        <button type="submit" class="btn btn-primary">Thêm món ăn mới</button>
+      </form>
+      <hr />
+
+      <form onsubmit="submitHandle(event)">
+        <h2>Chọn user</h2>
+        <div class="form-group">
+          <select class="form-control" id="userList"></select>
+        </div>
+        <h2>Chọn nhà hàng</h2>
+        <select class="form-control" id="resList"></select>
+        <h2>Chọn hành động</h2>
+        <button class="btn btn-primary" onclick="likeHandle(true)">
+          Like nhà hàng
+        </button>
+        <button class="btn btn-danger" onclick="likeHandle(false)">
+          Unlike nhà hàng
+        </button>
+      </form>
+      <hr />
+      <form onsubmit="likedResHandle(event)">
+        <h2>Chọn user</h2>
+        <div class="form-group">
+          <select class="form-control" id="userList2"></select>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          Xem danh sách nhà hàng đã like
+        </button>
+        <ul class="list-group mt-2" id="likedResList">
+          <li class="list-group-item">Danh sách trống!</li>
+        </ul>
+      </form>
+    </div>
+
+    <script>
+      const domain = "http://localhost:8080/api";
+      const addNewUser = async () => {
+        try {
+          const newUser = await axios("https://randomuser.me/api/").then(
+            async (result) => {
+              const user = result.data.results[0];
+              const full_name = user.name.first + " " + user.name.last;
+              const email = user.email;
+              const password = "1234";
+              await axios
+                .post(domain + "/user/createUser", {
+                  full_name,
+                  email,
+                  password,
+                })
+                .then((res) => {
+                  alert(res.data);
+                });
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      const getAllData = async () => {
+        const select = document.getElementById("foodType");
+        const userList = document.getElementById("userList");
+        const userList2 = document.getElementById("userList2");
+        const resList = document.getElementById("resList");
+        try {
+          await axios.get(domain + "/food/getAllFoodType").then((res) => {
+            res.data.forEach((element) => {
+              select.innerHTML +=
+                "<option value='" +
+                element.type_id +
+                "'>" +
+                element.type_name +
+                "</option>";
+            });
+          });
+          await axios.get(domain + "/user/getAllUsers").then((res) => {
+            res.data.forEach((element) => {
+              userList.innerHTML +=
+                "<option value='" +
+                element.user_id +
+                "'>" +
+                element.full_name +
+                "</option>";
+              userList2.innerHTML +=
+                "<option value='" +
+                element.user_id +
+                "'>" +
+                element.full_name +
+                "</option>";
+            });
+          });
+          await axios.get(domain + "/res/getAllRes").then((res) => {
+            res.data.forEach((element) => {
+              resList.innerHTML +=
+                "<option value='" +
+                element.res_id +
+                "'>" +
+                element.res_name +
+                "</option>";
+            });
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      getAllData();
+
+      const addNewFood = async (event) => {
+        event.preventDefault();
+        const foodName = document.getElementById("foodName").value;
+        const foodType = document.getElementById("foodType").value;
+        const foodPrice = document.getElementById("price").value;
+        const newFood = {
+          food_name: foodName,
+          image: "/img/test",
+          price: Number(foodPrice),
+          description: foodName,
+          type_id: foodType,
+        };
+        await axios
+          .post(domain + "/food/addNewFood", newFood)
+          .then((res) => alert(res.data));
+      };
+
+      const addNewFoodType = async () => {
+        try {
+          const type_name = document.getElementById("newFoodType").value;
+          const newFoodType = {
+            type_name,
+          };
+          console.log(newFoodType);
+          await axios
+            .post(domain + "/food/addNewFoodType", newFoodType)
+            .then((res) => alert(res.data));
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      const submitHandle = (event) => {
+        event.preventDefault();
+      };
+
+      const likeHandle = async (bool) => {
+        //true === like, false === unlike
+        try {
+          const userList = document.getElementById("userList").value;
+          const resList = document.getElementById("resList").value;
+          const likeHandle = {
+            user_id: userList,
+            res_id: resList,
+          };
+
+          await axios
+            .post(domain + `/res/${!bool ? "un" : ""}likeRes`, likeHandle)
+            .then((res) => alert(res.data))
+            .catch((error) => alert(error.response.data));
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      const likedResHandle = async (event) => {
+        event.preventDefault();
+        const user_id = document.getElementById("userList2").value;
+        const likedResList = document.getElementById("likedResList");
+        likedResList.innerHTML = "";
+        try {
+          const data = await axios
+            .get(domain + `/res/getLikedRes/${user_id}`)
+            .then((res) => {
+              res.data.forEach((element) => {
+                likedResList.innerHTML += `<option class="list-group-item">${element.res_name}</option>`;
+              });
+            })
+            .catch((error) => {
+              likedResList.innerHTML += `<option class="list-group-item">${error.response.data}</option>`;
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    </script>
+  </body>
+</html>
