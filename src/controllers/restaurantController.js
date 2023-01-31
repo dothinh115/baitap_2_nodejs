@@ -60,33 +60,18 @@ const likeRes = async (req, res) => {
     const checkIfLikedSql = `SELECT * FROM like_res WHERE user_id = ${user_id} AND res_id = ${res_id} LIMIT 1`;
     conn.query(checkIfLikedSql, async (error, result) => {
       if (result.length === 0) {
-        const addNewLikeSql = `INSERT INTO like_res (
-            user_id,
-            res_id,
-            date_like
-            ) VALUES (
-                ${user_id},
-            ${res_id},
-                "2008-10-29 14:56:59"
-            )`;
+        const addNewLikeSql = `INSERT INTO like_res (user_id, res_id, date_like) VALUES (${user_id}, ${res_id}, "2008-10-29 14:56:59")`;
         await conn.promise().query(addNewLikeSql);
         res
           .status(200)
           .send(
-            user_name.full_name +
-              " đã like " +
-              res_name.res_name +
-              " thành công!"
+            `${user_name.full_name} đã like ${res_name.res_name} thành công!`
           );
       } else {
         res
           .status(400)
           .send(
-            "LỖI: " +
-              user_name.full_name +
-              " đã like " +
-              res_name.res_name +
-              " rồi!"
+            `LỖI: ${user_name.full_name} đã like ${res_name.res_name} rồi!`
           );
       }
     });
@@ -119,9 +104,7 @@ const unLikeRes = async (req, res) => {
       if (result.length === 0) {
         res
           .status(400)
-          .send(
-            "LỖI: " + user_name.full_name + " chưa like " + res_name.res_name
-          );
+          .send(`LỖI: ${user_name.full_name} chưa like ${res_name.res_name}`);
       } else {
         await model.like_res.destroy({
           where: {
@@ -132,10 +115,7 @@ const unLikeRes = async (req, res) => {
         res
           .status(200)
           .send(
-            user_name.full_name +
-              " bỏ like " +
-              res_name.res_name +
-              " thành công!"
+            `${user_name.full_name} bỏ like ${res_name.res_name} thành công!`
           );
       }
     });
