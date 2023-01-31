@@ -89,32 +89,25 @@ const unLikeRes = async (req, res) => {
         res_id,
       },
     });
-    const newLike = {
-      user_id,
-      res_id,
-      date_like: new Date(),
-    };
-
     const checkIfLikedSql = `SELECT * FROM like_res WHERE user_id = ${user_id} AND res_id = ${res_id} LIMIT 1`;
-    conn.query(checkIfLikedSql, async (error, result) => {
-      if (result.length === 0) {
-        res
-          .status(400)
-          .send(`LỖI: ${user_name.full_name} chưa like ${res_name.res_name}`);
-      } else {
-        await model.like_res.destroy({
-          where: {
-            user_id,
-            res_id,
-          },
-        });
-        res
-          .status(200)
-          .send(
-            `${user_name.full_name} bỏ like ${res_name.res_name} thành công!`
-          );
-      }
-    });
+    const data = await conn.promise().query(checkIfLikedSql);
+    if (data[0].length === 0) {
+      res
+        .status(400)
+        .send(`LỖI: ${user_name.full_name} chưa like ${res_name.res_name}`);
+    } else {
+      await model.like_res.destroy({
+        where: {
+          user_id,
+          res_id,
+        },
+      });
+      res
+        .status(200)
+        .send(
+          `${user_name.full_name} bỏ like ${res_name.res_name} thành công!`
+        );
+    }
   } catch (error) {
     res.status(500).send("Lỗi backend");
   }
@@ -129,11 +122,11 @@ const getLikedRes = async (req, res) => {
         user_id,
       },
     });
-    conn.query(getLikedResSql, (error, result) => {
-      if (result.length === 0)
-        res.status(400).send(user_name.full_name + " chưa like nhà hàng nào!");
-      else res.status(200).send(result);
-    });
+    const data = await conn.promise().query(getLikedResSql);
+
+    if (data[0].length === 0)
+      res.status(400).send(user_name.full_name + " chưa like nhà hàng nào!");
+    else res.status(200).send(data[0]);
   } catch (error) {
     res.status(500).send("Lỗi backend");
   }
