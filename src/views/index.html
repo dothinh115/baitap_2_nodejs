@@ -211,7 +211,6 @@
           const data = await axios
             .get(domain + `/res/getLikedRes/${user_id}`)
             .then((res) => {
-              console.log(res.data);
               res.data.forEach((element) => {
                 likedResList.innerHTML += `<option class="list-group-item">${element.res_name}</option>`;
               });
