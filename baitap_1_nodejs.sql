@@ -53,23 +53,27 @@ CREATE TABLE `like_res` (
   `user_id` int DEFAULT NULL,
   `res_id` int DEFAULT NULL,
   `date_like` datetime DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `res_id` (`res_id`),
   CONSTRAINT `like_res_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `like_res_ibfk_2` FOREIGN KEY (`res_id`) REFERENCES `restaurant` (`res_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `like_res` (`user_id`, `res_id`, `date_like`) VALUES
-(2,	1,	'2008-10-29 14:56:59'),
-(3,	2,	'2008-10-29 14:56:59'),
-(5,	3,	'2008-10-29 14:56:59'),
-(6,	4,	'2008-10-29 14:56:59'),
-(10,	4,	'2008-10-29 14:56:59'),
-(8,	4,	'2008-10-29 14:56:59'),
-(9,	3,	'2008-10-29 14:56:59'),
-(1,	3,	'2008-10-29 14:56:59'),
-(9,	2,	'2008-10-29 14:56:59'),
-(9,	1,	'2008-10-29 14:56:59');
+INSERT INTO `like_res` (`user_id`, `res_id`, `date_like`, `id`) VALUES
+(2,	1,	'2008-10-29 14:56:59',	1),
+(3,	2,	'2008-10-29 14:56:59',	2),
+(5,	3,	'2008-10-29 14:56:59',	3),
+(6,	4,	'2008-10-29 14:56:59',	4),
+(10,	4,	'2008-10-29 14:56:59',	5),
+(8,	4,	'2008-10-29 14:56:59',	6),
+(9,	3,	'2008-10-29 14:56:59',	7),
+(1,	3,	'2008-10-29 14:56:59',	8),
+(9,	2,	'2008-10-29 14:56:59',	9),
+(9,	1,	'2008-10-29 14:56:59',	10),
+(1,	1,	'2023-02-01 12:57:03',	12),
+(1,	4,	'2023-02-01 13:04:37',	13);
 
 DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
@@ -78,22 +82,26 @@ CREATE TABLE `orders` (
   `amount` int DEFAULT NULL,
   `code` varchar(50) DEFAULT NULL,
   `arr_sub_id` varchar(100) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `food_id` (`food_id`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`food_id`) REFERENCES `food` (`food_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `orders` (`user_id`, `food_id`, `amount`, `code`, `arr_sub_id`) VALUES
-(1,	1,	2,	'abc',	'xyz'),
-(2,	2,	1,	'abc',	'xyz'),
-(3,	4,	5,	'abc',	'xyz'),
-(5,	1,	1,	'abc',	'xyz'),
-(5,	6,	2,	'abc',	'xyz'),
-(6,	8,	1,	'abc',	'xyz'),
-(10,	6,	2,	'abc',	'xyz'),
-(8,	3,	2,	'abc',	'xyz'),
-(9,	7,	4,	'abc',	'xyz');
+INSERT INTO `orders` (`user_id`, `food_id`, `amount`, `code`, `arr_sub_id`, `id`) VALUES
+(1,	1,	2,	'abc',	'xyz',	1),
+(2,	2,	1,	'abc',	'xyz',	2),
+(3,	4,	5,	'abc',	'xyz',	3),
+(5,	1,	1,	'abc',	'xyz',	4),
+(5,	6,	2,	'abc',	'xyz',	5),
+(6,	8,	1,	'abc',	'xyz',	6),
+(10,	6,	2,	'abc',	'xyz',	7),
+(8,	3,	2,	'abc',	'xyz',	8),
+(9,	7,	4,	'abc',	'xyz',	9),
+(1,	1,	3,	'abc',	'123',	10),
+(6,	7,	11,	'abc',	'123',	11);
 
 DROP TABLE IF EXISTS `rate_res`;
 CREATE TABLE `rate_res` (
@@ -101,6 +109,8 @@ CREATE TABLE `rate_res` (
   `res_id` int DEFAULT NULL,
   `amount` int DEFAULT NULL,
   `date_rate` datetime DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `res_id` (`res_id`),
   CONSTRAINT `rate_res_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
@@ -219,4 +229,4 @@ INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`) VALUES
 (74,	'Pat Jacobs',	'pat.jacobs@example.com',	'1234'),
 (75,	'Elvia Rosas',	'elvia.rosas@example.com',	'1234');
 
--- 2023-01-31 00:16:15
+-- 2023-02-01 13:48:52

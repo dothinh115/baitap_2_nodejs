@@ -9,10 +9,7 @@ const getAllFood = async (req, res) => {
       include: ["type"], // chuỗi, hoặc là mảng chuỗi
     });
 
-    if (data)
-      res.status(200).json({
-        data,
-      });
+    if (data) res.status(200).send(data);
   } catch (error) {
     res.status(500).send("Lỗi backend");
   }

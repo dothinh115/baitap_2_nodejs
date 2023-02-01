@@ -86,6 +86,23 @@
           <li class="list-group-item">Danh sách trống!</li>
         </ul>
       </form>
+      <hr />
+      <h2>Order món ăn</h2>
+      <form onsubmit="orderHandle(event)">
+        <div class="form-group row">
+          <label class="col-form-label col-sm-2">Chọn user</label>
+          <select class="form-control col-sm-10" id="userList3"></select>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-sm-2">Chọn món ăn</label>
+          <select class="form-control col-sm-10" id="foodList"></select>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-sm-2">Số lượng</label>
+          <input type="number" id="amount" class="form-control col-sm-10" />
+        </div>
+        <button class="btn btn-primary">Đặt</button>
+      </form>
     </div>
 
     <script>
@@ -118,7 +135,10 @@
         const select = document.getElementById("foodType");
         const userList = document.getElementById("userList");
         const userList2 = document.getElementById("userList2");
+        const userList3 = document.getElementById("userList3");
+
         const resList = document.getElementById("resList");
+        const foodList = document.getElementById("foodList");
         try {
           await axios.get(domain + "/food/getAllFoodType").then((res) => {
             res.data.forEach((element) => {
@@ -133,11 +153,19 @@
               userList2.innerHTML += `<option value="
                 ${element.user_id}">${element.full_name}
                 </option>`;
+              userList3.innerHTML += `<option value="
+                ${element.user_id}">${element.full_name}
+                </option>`;
             });
           });
           await axios.get(domain + "/res/getAllRes").then((res) => {
             res.data.forEach((element) => {
               resList.innerHTML += `<option value="${element.res_id}">${element.res_name}</option>`;
+            });
+          });
+          await axios.get(domain + "/food/getAllFood").then((res) => {
+            res.data.forEach((element) => {
+              foodList.innerHTML += `<option value="${element.food_id}">${element.food_name}</option>`;
             });
           });
         } catch (error) {
@@ -204,8 +232,9 @@
 
       const likedResHandle = async (event) => {
         event.preventDefault();
-        const user_id = document.getElementById("userList2").value;
+        const user_id = document.getElementById("userList2").value.trim();
         const likedResList = document.getElementById("likedResList");
+        console.log(user_id);
         likedResList.innerHTML = "";
         try {
           const data = await axios
@@ -232,6 +261,24 @@
           window.location.reload();
         } catch (error) {
           console.log(error);
+        }
+      };
+
+      const orderHandle = async (event) => {
+        event.preventDefault();
+        const user_id = document.getElementById("userList3").value.trim();
+        const food_id = document.getElementById("foodList").value.trim();
+        const amount = document.getElementById("amount").value.trim();
+        if (user_id && food_id && amount) {
+          await axios
+            .post(domain + "/orders/addOrder", {
+              user_id,
+              food_id,
+              amount,
+            })
+            .then((res) => alert(res.data));
+        } else {
+          alert("Không trường nào đc để trống!");
         }
       };
     </script>
