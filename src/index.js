@@ -12,6 +12,8 @@ const app = express();
 
 //cho phép express đọc chuỗi json
 app.use(express.json());
+//
+app.use(express.static("."));
 app.use(cors());
 //yarn add cors
 //khởi tạo server bằng Express
