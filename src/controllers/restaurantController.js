@@ -1,3 +1,4 @@
+const { errorCode, failCode, successCode } = require("../config/response");
 const { sequelize } = require("../models/index");
 const initModels = require("../models/init-models");
 
@@ -6,9 +7,9 @@ const model = initModels(sequelize);
 const getAllRes = async (req, res) => {
   try {
     const data = await model.restaurant.findAll();
-    if (data) res.status(200).send(data);
+    if (data) successCode(res, data, "Thành công");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -33,9 +34,11 @@ const likeRes = async (req, res) => {
       },
     });
     if (checkIfLiked) {
-      res
-        .status(400)
-        .send(`LỖI: ${user_name.full_name} đã like ${res_name.res_name} rồi!`);
+      failCode(
+        res,
+        null,
+        `LỖI: ${user_name.full_name} đã like ${res_name.res_name} rồi!`
+      );
     } else {
       const newLike = {
         user_id,
@@ -43,14 +46,14 @@ const likeRes = async (req, res) => {
         date_like: new Date(),
       };
       await model.like_res.create(newLike);
-      res
-        .status(200)
-        .send(
-          `${user_name.full_name} đã like ${res_name.res_name} thành công!`
-        );
+      successCode(
+        res,
+        null,
+        `${user_name.full_name} đã like ${res_name.res_name} thành công!`
+      );
     }
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -81,18 +84,20 @@ const unLikeRes = async (req, res) => {
           res_id,
         },
       });
-      res
-        .status(200)
-        .send(
-          `${user_name.full_name} bỏ like ${res_name.res_name} thành công!`
-        );
+      successCode(
+        res,
+        null,
+        `${user_name.full_name} bỏ like ${res_name.res_name} thành công!`
+      );
     } else {
-      res
-        .status(400)
-        .send(`LỖI: ${user_name.full_name} chưa like ${res_name.res_name}`);
+      failCode(
+        res,
+        null,
+        `LỖI: ${user_name.full_name} chưa like ${res_name.res_name}`
+      );
     }
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -105,7 +110,7 @@ const getLikedRes = async (req, res) => {
       },
     });
     if (user_name === null) {
-      res.status(400).send(`Không có user này!`);
+      failCode(res, null, `Không có user này!`);
       return;
     }
     const getLikedRes = await model.restaurant.findAll({
@@ -119,11 +124,10 @@ const getLikedRes = async (req, res) => {
         "$like_res.user_id$": user_id,
       },
     });
-    if (getLikedRes.length !== 0) res.status("200").send(getLikedRes);
-    else res.status(400).send(`${user_name.full_name} chưa like nhà hàng nào!`);
+    if (getLikedRes.length !== 0) successCode(res, getLikedRes, "Thành công!");
+    else failCode(res, null, `${user_name.full_name} chưa like nhà hàng nào!`);
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 

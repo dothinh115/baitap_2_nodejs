@@ -1,4 +1,5 @@
 // const User = require("../../save/user");
+const { successCode, errorCode, failCode } = require("../config/response");
 const { sequelize } = require("../models/index");
 const initModels = require("../models/init-models");
 
@@ -7,9 +8,9 @@ const model = initModels(sequelize);
 const getAllUsers = async (req, res) => {
   try {
     const data = await model.users.findAll();
-    res.status(200).send(data);
+    successCode(res, data, "Thành công!");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -26,10 +27,10 @@ const getUser = async (req, res) => {
         user_id: id,
       },
     });
-    if (data) res.status(200).send(data);
-    else res.status(400).send("Không tìm thấy user");
+    if (data) successCode(res, data, "Thành công!");
+    else failCode(res, null, "Không tìm thấy user");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -41,7 +42,7 @@ const createUser = async (req, res) => {
       email,
       password,
     });
-    res.status(200).send("Thêm user mới thành công!");
+    successCode(res, null, "Thêm user mới thành công!");
   } catch (error) {
     res.status(500).send("Lỗi backend");
   }
@@ -55,9 +56,9 @@ const deleteUser = async (req, res) => {
         user_id: id,
       },
     });
-    res.status(200).send("Xóa thành công");
+    successCode(res, null, "Xóa thành công!");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -81,13 +82,13 @@ const updateUser = async (req, res) => {
           user_id: id,
         },
       });
-      if (result[0] == 1) res.status(200).send("Update user thành công!");
+      if (result[0] == 1) successCode(res, null, "Update user thành công!");
       else res.status(200).send("Không có gì thay đổi!");
     } else {
-      res.status(400).send("Không tìm thấy user");
+      failCode(res, null, "Không tìm thấy user");
     }
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 

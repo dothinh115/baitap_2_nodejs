@@ -1,21 +1,29 @@
 const { Sequelize } = require("sequelize");
+const {
+  database,
+  dbUser,
+  dbPassword,
+  dbHost,
+  dbPort,
+  dbDialect,
+} = require("../config/index");
 
 //hàm kết nối csdl
-
-const sequelize = new Sequelize("baitap_1_nodejs", "root", "1234", {
-  host: "localhost",
-  port: 3306,
-  dialect: "mysql", //hệ csdl đang sử dụng
+require("dotenv").config();
+const sequelize = new Sequelize(database, dbUser, dbPassword, {
+  host: dbHost,
+  port: dbPort,
+  dialect: dbDialect, //hệ csdl đang sử dụng
 });
 
 const mysql = require("mysql2");
 
 const conn = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "1234",
-  port: 3306,
-  database: "baitap_1_nodejs",
+  host: dbHost,
+  user: dbUser,
+  password: dbPassword,
+  port: dbPort,
+  database: database,
 });
 
 module.exports = { sequelize, conn };

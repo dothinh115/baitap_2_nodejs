@@ -1,3 +1,4 @@
+const { errorCode, successCode, failCode } = require("../config/response");
 const { sequelize, conn } = require("../models/index");
 const initModels = require("../models/init-models");
 
@@ -9,9 +10,9 @@ const getAllFood = async (req, res) => {
       include: ["type"], // chuỗi, hoặc là mảng chuỗi
     });
 
-    if (data) res.status(200).send(data);
+    if (data) successCode(res, data, "Thành công");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -23,19 +24,19 @@ const getFood = async (req, res) => {
         food_id: id,
       },
     });
-    if (data) res.status(200).send(data);
-    else res.status(400).send("Không tìm ra kết quả!");
+    if (data) successCode(res, data, "Thành công");
+    else failCode(res, null, "Không tìm thấy kết quả");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
 const getAllFoodType = async (req, res) => {
   try {
     const data = await model.food_type.findAll();
-    if (data) res.send(data);
+    if (data) successCode(res, data, "Thành công");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -52,7 +53,7 @@ const addNewFood = async (req, res) => {
     await model.food.create(newFood);
     res.status(200).send("Thêm thức ăn mới thành công");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -64,7 +65,7 @@ const addNewFoodType = async (req, res) => {
     });
     res.status(200).send("Thêm loại thức ăn mới thành công");
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 

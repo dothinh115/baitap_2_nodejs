@@ -1,3 +1,8 @@
+console.log(__dirname); // trả về đường dẫn của file đang đứng hiện tại
+console.log(process.cwd()); //trả về đường dẫn gốc của thư mục
+const fs = require("fs"); // => file system, giúp thao tác với các file trên hệ thống
+fs.writeFile(process.cwd() + "/test.txt", "Hello world", (err) => {});
+
 //commonjs module  => import
 const express = require("express");
 const cors = require("cors");
