@@ -1,43 +1,45 @@
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   return users.init(sequelize, DataTypes);
-}
+};
 
 class users extends Sequelize.Model {
   static init(sequelize, DataTypes) {
-  return super.init({
-    user_id: {
-      autoIncrement: true,
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true
-    },
-    full_name: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    email: {
-      type: DataTypes.STRING(150),
-      allowNull: true
-    },
-    password: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    }
-  }, {
-    sequelize,
-    tableName: 'users',
-    timestamps: false,
-    indexes: [
+    return super.init(
       {
-        name: "PRIMARY",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "user_id" },
-        ]
+        user_id: {
+          autoIncrement: true,
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          primaryKey: true,
+        },
+        full_name: {
+          type: DataTypes.STRING(100),
+          allowNull: true,
+        },
+        email: {
+          type: DataTypes.STRING(150),
+          allowNull: true,
+          unique: true,
+        },
+        password: {
+          type: DataTypes.STRING(100),
+          allowNull: true,
+        },
       },
-    ]
-  });
+      {
+        sequelize,
+        tableName: "users",
+        timestamps: false,
+        indexes: [
+          {
+            name: "PRIMARY",
+            unique: true,
+            using: "BTREE",
+            fields: [{ name: "user_id" }],
+          },
+        ],
+      }
+    );
   }
 }

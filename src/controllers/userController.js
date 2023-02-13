@@ -2,7 +2,10 @@
 const { successCode, errorCode, failCode } = require("../config/response");
 const { sequelize } = require("../models/index");
 const initModels = require("../models/init-models");
+//yarn add bcrypt => mã hóa password
 
+const bcrypt = require("bcrypt");
+const { createToken } = require("../utils/jwtoken");
 const model = initModels(sequelize);
 
 const getAllUsers = async (req, res) => {
@@ -37,14 +40,22 @@ const getUser = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const { full_name, email, password } = req.body;
-    await model.users.create({
-      full_name,
-      email,
-      password,
+    const checkExist = await model.users.findOne({
+      where: {
+        email,
+      },
     });
-    successCode(res, null, "Thêm user mới thành công!");
+    if (checkExist) failCode(res, null, "Email đã tồn tại!");
+    else {
+      await model.users.create({
+        full_name,
+        email,
+        password: bcrypt.hashSync(password, 10),
+      });
+      successCode(res, null, "Thêm user mới thành công!");
+    }
   } catch (error) {
-    res.status(500).send("Lỗi backend");
+    errorCode(res, null, "Lỗi backend");
   }
 };
 
@@ -92,10 +103,63 @@ const updateUser = async (req, res) => {
   }
 };
 
+const signUp = async (req, res) => {
+  try {
+    const { full_name, email, password } = req.body;
+    const checkExist = await model.users.findOne({
+      where: {
+        email,
+      },
+    });
+    if (checkExist) failCode(res, null, "Email đã tồn tại!");
+    else {
+      await model.users.create({
+        full_name,
+        email,
+        password: bcrypt.hashSync(password, 10),
+      });
+      successCode(res, null, "Đăng ký thành công!");
+    }
+  } catch (error) {
+    errorCode(res, null, "Lỗi backend");
+  }
+};
+
+const signIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const checkExist = await model.users.findOne({
+      where: {
+        email,
+      },
+    });
+    if (checkExist) {
+      //so sánh mã hóa (hàm compareSync)
+      if (bcrypt.compareSync(password, checkExist.password)) {
+        let data = await model.users.findOne({
+          where: {
+            email,
+          },
+          attributes: {
+            exclude: ["password"], //không trả lại password
+          },
+        });
+        const token = createToken(data);
+        successCode(res, { data, token }, "Đăng nhập thành công!");
+      } else failCode(res, null, "Email hoặc mật khẩu không đúng!");
+    } else failCode(res, null, "Email hoặc mật khẩu không đúng!");
+  } catch (error) {
+    errorCode(res, null, "Lỗi backend");
+    console.log(error);
+  }
+};
+
 module.exports = {
   getUser,
   createUser,
   getAllUsers,
   deleteUser,
   updateUser,
+  signIn,
+  signUp,
 };
