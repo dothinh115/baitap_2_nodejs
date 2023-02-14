@@ -11,7 +11,7 @@ const {
 const userRoute = express.Router();
 
 const multer = require("multer");
-const { checkToken, verifyToken } = require("../utils/jwtoken");
+const { verifyToken } = require("../utils/jwtoken");
 // const upload = multer({ dest: `${process.cwd()}/public/img` });
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
